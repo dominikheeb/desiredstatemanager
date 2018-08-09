@@ -1,0 +1,60 @@
+unless Vagrant.has_plugin?("vagrant-reload")
+  raise 'vagrant-reload is not installed!'
+end
+
+unless Vagrant.has_plugin?("vagrant-timezone")
+  raise 'vagrant-timezone is not installed!'
+end
+
+Vagrant.configure("2") do |config|
+  if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/default/*").empty? || ARGV[1] == '--provision'
+    print "Please insert your credentials\n"
+    print "Username: "
+    username = STDIN.gets.chomp
+    print "Password: "
+    password = STDIN.noecho(&:gets).chomp
+    print "\n"
+
+    config.vm.synced_folder ".", "/vagrant", type: "smb", smb_username: username, smb_password: password
+  end
+
+  
+  config.vm.box = "Win10Template"
+  config.vm.hostname = "BetterReddit"
+  config.vm.guest = :windows
+  config.vm.communicator = "winrm"
+
+  config.timezone.value = :host
+  config.vm.provision "shell" do |s|
+    s.inline = "Get-PackageProvider -Name NuGet -ForceBootstrap"
+  end
+  config.vm.provision "shell" do |s|
+    s.inline = "Set-PSRepository -Name PSGallery -InstallationPolicy Trusted"
+  end
+
+  config.vm.provision "shell" do |s|
+    s.inline = "winrm set 'winrm/config' '@{MaxEnvelopeSizekb=\"2048000\"}'"
+  end
+
+  config.vm.provision :reload
+
+  config.vm.provision "file", source: "DSC", destination: "C:\\DSC"
+
+  config.vm.provision "shell" do |s|
+    s.path = "DSC/Config/resolveDependencies.ps1"
+    s.upload_path = "C:\\DSC\\Config\\resolveDependencies.ps1"
+    s.args = "C:\\DSC\\Config"
+  end
+
+  config.vm.provision "shell" do |s|
+    s.path = "DSC/Config/build.ps1"
+    s.upload_path = "C:\\DSC\\Config\\build.ps1"
+  end
+
+  config.vm.provision "shell" do |s|
+    s.inline = "Start-DSCConfiguration -Path C:\\DSC\\MOF\\DevMachine\\ -Force -Wait -Verbose"
+  end
+
+  config.vm.provision :reload
+end
+
