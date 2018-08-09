@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "desiredstatemanager.api", "
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{31286DB4-4D15-4CB6-B50B-9494A5C34F9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "desiredstatemanager.domain", "..\desiredstatemanager.domain\desiredstatemanager.domain.csproj", "{0F718C99-3CF8-44EE-AE48-DBB29E9505BE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{31286DB4-4D15-4CB6-B50B-9494A5C34F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31286DB4-4D15-4CB6-B50B-9494A5C34F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31286DB4-4D15-4CB6-B50B-9494A5C34F9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F718C99-3CF8-44EE-AE48-DBB29E9505BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F718C99-3CF8-44EE-AE48-DBB29E9505BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F718C99-3CF8-44EE-AE48-DBB29E9505BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F718C99-3CF8-44EE-AE48-DBB29E9505BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
