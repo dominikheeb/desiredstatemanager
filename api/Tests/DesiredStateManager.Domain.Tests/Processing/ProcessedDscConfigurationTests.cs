@@ -3,6 +3,7 @@ using DesiredStateManager.Domain.Chocolatey.Dto;
 using DesiredStateManager.Domain.Core;
 using DesiredStateManager.Domain.Core.Dto;
 using DesiredStateManager.Domain.Processing;
+using DesiredStateManager.Domain.Processing.Model;
 using Xunit;
 
 namespace DesiredStateManager.Domain.Tests.Processing
@@ -59,7 +60,7 @@ namespace DesiredStateManager.Domain.Tests.Processing
             Assert.Contains("Ensure", thirdProcessedDscResource.DscProperties.Keys);
             Assert.Equal("Present", thirdProcessedDscResource.DscProperties["Ensure"]);
             Assert.Contains("DependsOn", thirdProcessedDscResource.DscProperties.Keys);
-            Assert.Equal("@([cChocoPackageInstaller]dockerStep, cChocoPackageInstaller]resharperStep)", thirdProcessedDscResource.DscProperties["DependsOn"]);
+            Assert.Equal($"@([{dockerChocolateyResourceDto.ResourceName}]{dockerChocolateyResourceDto.ResourceStepName}, [{visualStudioChocolateyResourceDto.ResourceName}]{visualStudioChocolateyResourceDto.ResourceStepName})", thirdProcessedDscResource.DscProperties["DependsOn"]);
             Assert.Contains("Name", thirdProcessedDscResource.DscProperties.Keys);
             Assert.Equal(resharperChocolateyResourceDto.ChocolateyPackageName, thirdProcessedDscResource.DscProperties["Name"]);
         }
@@ -103,6 +104,7 @@ namespace DesiredStateManager.Domain.Tests.Processing
             dscConfigurationDto = new DscConfigurationDto();
             dscConfigurationDto.DscResourceDtos.Add(visualStudioChocolateyResourceDto);
             dscConfigurationDto.DscResourceDtos.Add(dockerChocolateyResourceDto);
+            dscConfigurationDto.DscResourceDtos.Add(resharperChocolateyResourceDto);
         }
 
         

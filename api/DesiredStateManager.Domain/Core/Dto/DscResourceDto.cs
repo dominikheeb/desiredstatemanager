@@ -13,7 +13,12 @@ namespace DesiredStateManager.Domain.Core.Dto
 
         public string ResourceStepName { get; set; }
 
-        [DscProperty("DependsOn")]
+        [DscCollectionProperty("DependsOn", typeof(DscResourceDto))]
         public List<DscResourceDto> DependsOn { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{ResourceName}]{ResourceStepName}";
+        }
     }
 }
