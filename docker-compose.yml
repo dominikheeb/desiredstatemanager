@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  desiredstatemanager.api:
+    image: ${DOCKER_REGISTRY}desiredstatemanagerapi
+    build:
+      context: .
+      dockerfile: api\DesiredStateManager.Api\Dockerfile
+  desiredstatemanager.ravendb:
+    image: "ravendb/ravendb:4.0.6-patch-40047-windows-nanoserver"
+    hostname: "ravendb"
+    volumes:
+      - configVolume:c:\RavenDB\Config
+      - dataVolume:c:\RavenDB\Server\RavenData
+    environment:
+      RAVEN_ARGS: --config-path c:\RavenDB\Config\settings.json --ServerUrl=http://0.0.0.0:8080 --Setup.Mode=None --Security.UnsecuredAccessAllowed=PublicNetwork --License.Eula.Accepted=true
+volumes:
+  configVolume:
+  dataVolume:
