@@ -15,10 +15,5 @@ namespace DesiredStateManager.Domain.Core.Dto
 
         [DscProperty("DependsOn")]
         public List<DscResourceDto> DependsOn { get; set; }
-
-        public string GetDscResourceTitle()
-        {
-            return $"[{ResourceName}]{ResourceStepName}";
-        }
     }
 }

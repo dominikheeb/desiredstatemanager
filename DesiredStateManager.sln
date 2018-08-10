@@ -5,11 +5,15 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{B590ED58-8CBA-4FF4-9CA7-BE66F675963B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesiredStateManager.Api", "api\DesiredStateManager.Api\DesiredStateManager.Api.csproj", "{F80C5979-A6AD-4787-B13A-92D71F9FC522}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesiredStateManager.Api", "api\DesiredStateManager.Api\DesiredStateManager.Api.csproj", "{F80C5979-A6AD-4787-B13A-92D71F9FC522}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{39568651-3297-43FC-A97E-00156BBF66E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesiredStateManager.Domain", "api\DesiredStateManager.Domain\DesiredStateManager.Domain.csproj", "{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesiredStateManager.Domain", "api\DesiredStateManager.Domain\DesiredStateManager.Domain.csproj", "{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3F98979F-C9EA-445F-A8E5-DE8A56555ED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesiredStateManager.Domain.Tests", "api\Tests\DesiredStateManager.Domain.Tests\DesiredStateManager.Domain.Tests.csproj", "{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +33,10 @@ Global
 		{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +44,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F80C5979-A6AD-4787-B13A-92D71F9FC522} = {B590ED58-8CBA-4FF4-9CA7-BE66F675963B}
 		{EF7CB579-5CC4-4FFC-ACC0-02B8EA8CC5E9} = {B590ED58-8CBA-4FF4-9CA7-BE66F675963B}
+		{3F98979F-C9EA-445F-A8E5-DE8A56555ED9} = {B590ED58-8CBA-4FF4-9CA7-BE66F675963B}
+		{939E6FF4-F86D-43C8-AC8D-8AF194AD04C9} = {3F98979F-C9EA-445F-A8E5-DE8A56555ED9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AFC3FFAC-842D-4F5A-83BF-6A44CD0459C0}

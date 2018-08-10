@@ -6,9 +6,16 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
 {
     public class ChocolateyPackage : IDscResource
     {
+        public ChocolateyPackage()
+        {
+            ResourceName = "cChocoPackageInstaller";
+        }
+
         public Ensure Ensure { get; set; }
         public string ResourceName { get; set; }
         public string ResourceStepName { get; set; }
         public List<IDscResource> DependsOn { get; set; }
+
+        public string ChocolateyPackageName { get; set; }
     }
 }
