@@ -7,5 +7,8 @@ namespace DesiredStateManager.Domain.Chocolatey.Dto
     {
         [DscProperty("Name")]
         public string ChocolateyPackageName { get; set; }
+
+        [DscProperty("Version")]
+        public string ChocolateyPackageVersion { get; set; }
     }
 }

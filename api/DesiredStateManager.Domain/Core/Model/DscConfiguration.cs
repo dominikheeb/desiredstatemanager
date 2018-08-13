@@ -9,8 +9,7 @@ namespace DesiredStateManager.Domain.Core.Model
     {
         public List<IDscResource> DscResources { get; set; }
 
-        public static DscConfiguration FromPreferences(ProjectPreference projectPreference,
-            UserPreference userPreference)
+        public static DscConfiguration FromMergedPreference(MergedPreference projectPreference)
         {
             throw new NotImplementedException();
         }

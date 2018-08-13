@@ -26,10 +26,13 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
                 ResourceStepName = ResourceStepName,
                 Ensure = Ensure,
                 ResourceName = ResourceName,
+                ChocolateyPackageVersion = ChocolateyPackageVersion,
                 DependsOn = DependsOn?.Select(x => x.ToResourceDto()).ToList()
             };
         }
 
         public string ChocolateyPackageName { get; set; }
+
+        public string ChocolateyPackageVersion { get; set; }
     }
 }

@@ -62,6 +62,7 @@ namespace DesiredStateManager.Domain.Tests.Processing
             Assert.DoesNotContain("DependsOn", firstProcessedResource.DscProperties.Keys);
             Assert.Contains("Name", firstProcessedResource.DscProperties.Keys);
             Assert.Equal(dockerChocolateyResourceDto.ChocolateyPackageName, firstProcessedResource.DscProperties["Name"]);
+            Assert.DoesNotContain("Version", firstProcessedResource.DscProperties.Keys);
 
             var secondProcessedDscResource = processedDscConfiguration.ProcessedDscResources[1];
             Assert.Equal(visualStudioChocolateyResourceDto.ResourceName, secondProcessedDscResource.ResourceName);
@@ -73,6 +74,7 @@ namespace DesiredStateManager.Domain.Tests.Processing
             Assert.Equal("[cChocoPackageInstaller]dockerStep",secondProcessedDscResource.DscProperties["DependsOn"]);
             Assert.Contains("Name", secondProcessedDscResource.DscProperties.Keys);
             Assert.Equal(visualStudioChocolateyResourceDto.ChocolateyPackageName, secondProcessedDscResource.DscProperties["Name"]);
+            Assert.DoesNotContain("Version", secondProcessedDscResource.DscProperties.Keys);
 
             var thirdProcessedDscResource = processedDscConfiguration.ProcessedDscResources[2];
             Assert.Equal(resharperChocolateyResourceDto.ResourceName, thirdProcessedDscResource.ResourceName);
@@ -84,6 +86,8 @@ namespace DesiredStateManager.Domain.Tests.Processing
             Assert.Equal($"@([{dockerChocolateyResourceDto.ResourceName}]{dockerChocolateyResourceDto.ResourceStepName}, [{visualStudioChocolateyResourceDto.ResourceName}]{visualStudioChocolateyResourceDto.ResourceStepName})", thirdProcessedDscResource.DscProperties["DependsOn"]);
             Assert.Contains("Name", thirdProcessedDscResource.DscProperties.Keys);
             Assert.Equal(resharperChocolateyResourceDto.ChocolateyPackageName, thirdProcessedDscResource.DscProperties["Name"]);
+            Assert.Contains("Version", thirdProcessedDscResource.DscProperties.Keys);
+            Assert.Equal(resharperChocolateyResourceDto.ChocolateyPackageVersion, thirdProcessedDscResource.DscProperties["Version"]);
         }
 
         private void WhenProcessingConfigurationDto()
@@ -116,7 +120,8 @@ namespace DesiredStateManager.Domain.Tests.Processing
                 ChocolateyPackageName = "resharper",
                 Ensure = Ensure.Present,
                 DependsOn = new List<DscResourceDto> { dockerChocolateyResourceDto, visualStudioChocolateyResourceDto },
-                ResourceStepName = "resharperStep"
+                ResourceStepName = "resharperStep",
+                ChocolateyPackageVersion = "1.2.3"
             };
         }
 

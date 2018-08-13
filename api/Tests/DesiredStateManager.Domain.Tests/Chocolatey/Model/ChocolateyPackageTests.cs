@@ -39,6 +39,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
             Assert.Equal(testChocolateyPackage.ChocolateyPackageName, resultChocolateyPackageDto.ChocolateyPackageName);
             Assert.Equal(testChocolateyPackage.ResourceName, resultChocolateyPackageDto.ResourceName);
             Assert.Equal(testChocolateyPackage.Ensure, resultChocolateyPackageDto.Ensure);
+            Assert.Equal(testChocolateyPackage.ChocolateyPackageVersion, resultChocolateyPackageDto.ChocolateyPackageVersion);
             Assert.Null(resultChocolateyPackageDto.DependsOn);
         }
 
@@ -60,6 +61,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
             Assert.Equal(testChocolateyPackage.ChocolateyPackageName, resultChocolateyPackageDto.ChocolateyPackageName);
             Assert.Equal(testChocolateyPackage.ResourceName, resultChocolateyPackageDto.ResourceName);
             Assert.Equal(testChocolateyPackage.Ensure, resultChocolateyPackageDto.Ensure);
+            Assert.Equal(testChocolateyPackage.ChocolateyPackageVersion, resultChocolateyPackageDto.ChocolateyPackageVersion);
             Assert.Equal(testChocolateyPackage.DependsOn.Count, resultChocolateyPackageDto.DependsOn.Count);
             foreach (var dscDependency in resultChocolateyPackageDto.DependsOn)
             {
@@ -91,7 +93,8 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
                 ChocolateyPackageName = "docker-for-windows",
                 Ensure = Ensure.Present,
                 ResourceStepName = "dockerStep",
-                DependsOn = new List<IDscResource> { testDependency }
+                DependsOn = new List<IDscResource> { testDependency },
+                ChocolateyPackageVersion = "1.23.4"
             };
         }
     }
