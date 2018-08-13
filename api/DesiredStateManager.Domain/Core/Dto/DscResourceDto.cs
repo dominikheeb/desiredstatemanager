@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DesiredStateManager.Domain.Processing;
 
 namespace DesiredStateManager.Domain.Core.Dto
@@ -10,7 +9,7 @@ namespace DesiredStateManager.Domain.Core.Dto
         public Ensure Ensure { get; set; }
 
         public string ResourceName { get; set; }
-
+        
         public string ResourceStepName { get; set; }
 
         [DscCollectionProperty("DependsOn", typeof(DscResourceDto))]

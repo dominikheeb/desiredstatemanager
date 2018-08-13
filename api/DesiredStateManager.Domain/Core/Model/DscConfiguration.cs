@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using DesiredStateManager.Domain.Core.Dto;
 
 namespace DesiredStateManager.Domain.Core.Model
 {
@@ -10,6 +12,11 @@ namespace DesiredStateManager.Domain.Core.Model
             UserPreference userPreference)
         {
             return null;
+        }
+
+        public DscConfigurationDto ToConfigurationDto()
+        {
+            throw new NotImplementedException();
         }
     }
 }

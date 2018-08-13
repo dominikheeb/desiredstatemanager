@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DesiredStateManager.Domain.Core.Dto;
 
 namespace DesiredStateManager.Domain.Core.Model
 {
@@ -11,5 +12,7 @@ namespace DesiredStateManager.Domain.Core.Model
         string ResourceStepName { get; set; }
 
         List<IDscResource> DependsOn { get; set; }
+
+        DscResourceDto ToResourceDto();
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DesiredStateManager.Domain.Chocolatey.Dto;
 using DesiredStateManager.Domain.Core;
 using DesiredStateManager.Domain.Core.Dto;
-using DesiredStateManager.Domain.Processing;
 using DesiredStateManager.Domain.Processing.Model;
 using Xunit;
 
@@ -19,10 +19,31 @@ namespace DesiredStateManager.Domain.Tests.Processing
         [Fact]
         public void TestDscConfigurationProcessing()
         {
-            InitalizeTestDtos();
+            InitializeTestDtos();
             GivenDscConfigurationDtoWithChocolateyResourcesInWrongOrder();
             WhenProcessingConfigurationDto();
             ThenProcessedDscConfigurationIsCreatedWithCorrectOrder();
+        }
+
+        [Fact]
+        public void TestDscConfigurationProcessingOnCyclicDependency()
+        {
+            InitializeTestDtos();
+            GivenDscConfigurationDtoWithCyclicDependency();
+            ThenCyclicDependencyExceptionIsThrown();
+        }
+
+        private void ThenCyclicDependencyExceptionIsThrown()
+        {
+            Assert.Throws<ArgumentException>(() => WhenProcessingConfigurationDto());
+        }
+
+        private void GivenDscConfigurationDtoWithCyclicDependency()
+        {
+            dscConfigurationDto = new DscConfigurationDto();
+            dockerChocolateyResourceDto.DependsOn = new List<DscResourceDto>{visualStudioChocolateyResourceDto};
+            dscConfigurationDto.DscResourceDtos.Add(visualStudioChocolateyResourceDto);
+            dscConfigurationDto.DscResourceDtos.Add(dockerChocolateyResourceDto);
         }
 
         private void ThenProcessedDscConfigurationIsCreatedWithCorrectOrder()
@@ -70,7 +91,7 @@ namespace DesiredStateManager.Domain.Tests.Processing
             processedDscConfiguration = ProcessedDscConfiguration.FromDscConfiguration(dscConfigurationDto);
         }
 
-        private void InitalizeTestDtos()
+        private void InitializeTestDtos()
         {
             dockerChocolateyResourceDto = new ChocolateyPackageDto
             {

@@ -53,7 +53,6 @@ namespace DesiredStateManager.Domain.Processing.Services
 
                 foreach (var dscCollectionProperty in dscCollectionProperties)
                 {
-                    //TODO:Handle Collections
                     if (dscCollectionProperty.PropertyValue is IEnumerable<object> collectionValue)
                     {
                         var list = collectionValue.ToList();
