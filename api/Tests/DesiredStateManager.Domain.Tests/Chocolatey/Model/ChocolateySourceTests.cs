@@ -15,12 +15,41 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
         private DscResourceDto resultDto;
 
         [Fact]
-        public void TestChocolateyPackageToDto()
+        public void TestChocolateySourceToDto()
         {
             InitializeDependencyModel();
             GivenModelFilledWithValues();
             WhenConvertingToDto();
             ThenDtoContentIsCorrect();
+        }
+
+        [Fact]
+        public void TestChocolateySourceToDtoWithoutDependencies()
+        {
+            GivenModelFilledWithValuesWithoutDependencies();
+            WhenConvertingToDto();
+            ThenDtoContentIsCorrectWithoutDependencies();
+        }
+
+        private void ThenDtoContentIsCorrectWithoutDependencies()
+        {
+            Assert.IsType<ChocolateySourceDto>(resultDto);
+            var resultChocolateySourceDto = (ChocolateySourceDto)resultDto;
+            Assert.Equal(testChocolateySource.ResourceStepName, resultChocolateySourceDto.ResourceStepName);
+            Assert.Equal(testChocolateySource.ChocoPackageSource, resultChocolateySourceDto.ChocoPackageSource);
+            Assert.Equal(testChocolateySource.ResourceName, resultChocolateySourceDto.ResourceName);
+            Assert.Equal(testChocolateySource.Ensure, resultChocolateySourceDto.Ensure);
+            Assert.Null(resultChocolateySourceDto.DependsOn);
+        }
+
+        private void GivenModelFilledWithValuesWithoutDependencies()
+        {
+            testChocolateySource = new ChocolateySource
+            {
+                ChocoPackageSource = "https://test123",
+                Ensure = Ensure.Present,
+                ResourceStepName = "dockerStep"
+            };
         }
 
         private void ThenDtoContentIsCorrect()

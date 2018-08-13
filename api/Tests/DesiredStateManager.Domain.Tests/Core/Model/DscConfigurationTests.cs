@@ -26,6 +26,24 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             ThenDtoIsCreatedWithCorrectResourceDtos();
         }
 
+        [Fact]
+        public void TestDscConfigurationToDtoWithoutResources()
+        {
+            GivenDscConfigurationWithoutResources();
+            WhenUsingToDto();
+            ThenDtoIsCreatedWithoutDscResources();
+        }
+
+        private void ThenDtoIsCreatedWithoutDscResources()
+        {
+            Assert.Null(testDscConfiguration.DscResources);
+        }
+
+        private void GivenDscConfigurationWithoutResources()
+        {
+            testDscConfiguration = new DscConfiguration();
+        }
+
         private void ThenDtoIsCreatedWithCorrectResourceDtos()
         {
             Assert.Equal(3, resultDto.DscResourceDtos.Count);

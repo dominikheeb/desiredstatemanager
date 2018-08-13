@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DesiredStateManager.Domain.Core.Dto;
 
 namespace DesiredStateManager.Domain.Core.Model
@@ -11,12 +12,15 @@ namespace DesiredStateManager.Domain.Core.Model
         public static DscConfiguration FromPreferences(ProjectPreference projectPreference,
             UserPreference userPreference)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public DscConfigurationDto ToConfigurationDto()
         {
-            throw new NotImplementedException();
+            return new DscConfigurationDto
+            {
+                DscResourceDtos = DscResources?.Select(x => x.ToResourceDto()).ToList()
+            };
         }
     }
 }

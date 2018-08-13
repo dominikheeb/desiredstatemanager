@@ -23,6 +23,35 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
             ThenDtoContentIsCorrect();
         }
 
+        [Fact]
+        public void TestChocolateyPackageToDtoWithoutDependency()
+        {
+            GivenModelFilledWithValuesWithoutDependency();
+            WhenConvertingToDto();
+            ThenDtoContentIsCorrectWithoutDependencies();
+        }
+
+        private void ThenDtoContentIsCorrectWithoutDependencies()
+        {
+            Assert.IsType<ChocolateyPackageDto>(resultDto);
+            var resultChocolateyPackageDto = (ChocolateyPackageDto)resultDto;
+            Assert.Equal(testChocolateyPackage.ResourceStepName, resultChocolateyPackageDto.ResourceStepName);
+            Assert.Equal(testChocolateyPackage.ChocolateyPackageName, resultChocolateyPackageDto.ChocolateyPackageName);
+            Assert.Equal(testChocolateyPackage.ResourceName, resultChocolateyPackageDto.ResourceName);
+            Assert.Equal(testChocolateyPackage.Ensure, resultChocolateyPackageDto.Ensure);
+            Assert.Null(resultChocolateyPackageDto.DependsOn);
+        }
+
+        private void GivenModelFilledWithValuesWithoutDependency()
+        {
+            testChocolateyPackage = new ChocolateyPackage
+            {
+                ChocolateyPackageName = "docker-for-windows",
+                Ensure = Ensure.Present,
+                ResourceStepName = "dockerStep"
+            };
+        }
+
         private void ThenDtoContentIsCorrect()
         {
             Assert.IsType<ChocolateyPackageDto>(resultDto);

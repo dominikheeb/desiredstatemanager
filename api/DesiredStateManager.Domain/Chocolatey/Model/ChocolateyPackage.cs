@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using DesiredStateManager.Domain.Chocolatey.Dto;
 using DesiredStateManager.Domain.Core;
 using DesiredStateManager.Domain.Core.Dto;
 using DesiredStateManager.Domain.Core.Model;
@@ -18,7 +20,14 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
         public List<IDscResource> DependsOn { get; set; }
         public DscResourceDto ToResourceDto()
         {
-            throw new System.NotImplementedException();
+            return new ChocolateyPackageDto
+            {
+                ChocolateyPackageName = ChocolateyPackageName,
+                ResourceStepName = ResourceStepName,
+                Ensure = Ensure,
+                ResourceName = ResourceName,
+                DependsOn = DependsOn?.Select(x => x.ToResourceDto()).ToList()
+            };
         }
 
         public string ChocolateyPackageName { get; set; }
