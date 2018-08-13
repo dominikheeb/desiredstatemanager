@@ -7,7 +7,7 @@ using DesiredStateManager.Domain.Core.Dto;
 using DesiredStateManager.Domain.Core.Model;
 using Xunit;
 
-namespace DesiredStateManager.Domain.Tests.Core
+namespace DesiredStateManager.Domain.Tests.Core.Model
 {
     public class DscConfigurationTests
     {

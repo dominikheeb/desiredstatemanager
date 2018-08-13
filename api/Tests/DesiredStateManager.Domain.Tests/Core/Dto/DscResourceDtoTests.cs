@@ -4,7 +4,7 @@ using DesiredStateManager.Domain.Core;
 using DesiredStateManager.Domain.Core.Dto;
 using Xunit;
 
-namespace DesiredStateManager.Domain.Tests.Core
+namespace DesiredStateManager.Domain.Tests.Core.Dto
 {
     public class DscResourceDtoTests
     {
