@@ -6,7 +6,7 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
 {
     public class MergeHelper
     {
-        public static string GetMergableName(string oldResourceStepName, List<MergeResult<IDscResource>> mergeResultsToMerge)
+        public static string GetMergableName(string oldResourceStepName, List<MergeResult<DscResource>> mergeResultsToMerge)
         {
             string newResourceStepName = oldResourceStepName;
             int duplIndex = 1;

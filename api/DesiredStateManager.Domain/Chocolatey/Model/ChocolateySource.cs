@@ -8,18 +8,15 @@ using DesiredStateManager.Domain.Core.Model;
 
 namespace DesiredStateManager.Domain.Chocolatey.Model
 {
-    public class ChocolateySource : IDscResource
+    public class ChocolateySource : DscResource
     {
         public ChocolateySource()
         {
             ResourceName = "cChocoSource";
         }
+        public string ChocoPackageSource { get; set; }
 
-        public Ensure Ensure { get; set; }
-        public string ResourceName { get; set; }
-        public string ResourceStepName { get; set; }
-        public List<IDscResource> DependsOn { get; set; }
-        public DscResourceDto ToResourceDto()
+        public override DscResourceDto ToResourceDto()
         {
             return new ChocolateySourceDto
             {
@@ -31,21 +28,7 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
             };
         }
 
-        public List<MergeResult<IDscResource>> MergeDscResources(List<MergeResult<IDscResource>> mergeResultsToMerge)
-        {
-            mergeResultsToMerge = mergeResultsToMerge.Where(x => !IsOverriddenByThis(x)).ToList();
-            ResourceStepName = MergeHelper.GetMergableName(ResourceStepName, mergeResultsToMerge);
-
-            mergeResultsToMerge.Add(new MergeResult<IDscResource>
-            {
-                Value = this,
-                Success = true
-            });
-
-            return mergeResultsToMerge;
-        }
-
-        private bool IsOverriddenByThis(MergeResult<IDscResource> resultToCompare)
+        internal override bool IsOverriddenByThis(MergeResult<DscResource> resultToCompare)
         {
             bool chocolateySourceIsOverriddenByThis = false;
             if(resultToCompare.Value is ChocolateySource chocolateySourceToCompare)
@@ -53,10 +36,8 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
                 chocolateySourceIsOverriddenByThis = chocolateySourceToCompare.ChocoPackageSource.Equals(ChocoPackageSource);
             }
 
-            return resultToCompare.Value.IsOverriddenByNaming(this) ||
+            return base.IsOverriddenByThis(resultToCompare)||
                    chocolateySourceIsOverriddenByThis;
         }
-
-        public string ChocoPackageSource { get; set; }
     }
 }

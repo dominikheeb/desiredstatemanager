@@ -70,12 +70,12 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
 
             projectPreference = new ProjectPreference
             {
-                DscResources = new List<IDscResource> { dockerChocolateyResource }
+                DscResources = new List<DscResource> { dockerChocolateyResource }
             };
 
             userPreference = new UserPreference
             {
-                DscResources = new List<IDscResource> { visualStudioChocolateyResource }
+                DscResources = new List<DscResource> { visualStudioChocolateyResource }
             };
         }
 
@@ -109,12 +109,12 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
 
             projectPreference = new ProjectPreference
             {
-                DscResources = new List<IDscResource> { dockerChocolateyResourceVersion1 }
+                DscResources = new List<DscResource> { dockerChocolateyResourceVersion1 }
             };
 
             userPreference = new UserPreference
             {
-                DscResources = new List<IDscResource> {dockerChocolateyResourceVersion2}
+                DscResources = new List<DscResource> {dockerChocolateyResourceVersion2}
             };
         }
 
@@ -154,12 +154,12 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
         {
             projectPreference = new ProjectPreference
             {
-                DscResources = new List<IDscResource> { chocolateySourceResource, visualStudioChocolateyResource, absentDockerChocolateyResource, firefoxSpecifiedVersionResource }
+                DscResources = new List<DscResource> { chocolateySourceResource, visualStudioChocolateyResource, absentDockerChocolateyResource, firefoxSpecifiedVersionResource }
             };
 
             userPreference = new UserPreference
             {
-                DscResources = new List<IDscResource> { firefoxChocolateyResource, dockerChocolateyResource }
+                DscResources = new List<DscResource> { firefoxChocolateyResource, dockerChocolateyResource }
             };
         }
 
@@ -176,7 +176,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             {
                 ChocolateyPackageName = "docker-for-windows",
                 ResourceStepName = "dockerStep",
-                DependsOn = new List<IDscResource> { chocolateySourceResource },
+                DependsOn = new List<DscResource> { chocolateySourceResource },
                 Ensure = Ensure.Present
             };
 

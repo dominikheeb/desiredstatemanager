@@ -13,9 +13,9 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
         private ChocolateySource testChocolateySource;
         private ChocolateyPackage testDependency;
         private DscResourceDto resultDto;
-        private MergeResult<IDscResource> mergeResultGiven;
+        private MergeResult<DscResource> mergeResultGiven;
         private ChocolateySource modelGivenForMerge;
-        private List<MergeResult<IDscResource>> mergedResult;
+        private List<MergeResult<DscResource>> mergedResult;
 
         [Fact]
         public void TestChocolateySourceToDto()
@@ -60,7 +60,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void GivenMergeResultAndModelWithSameSource()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateySource
                 {
@@ -80,7 +80,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void GivenMergeResultAndModelWithSameSourceButDifferentEnsure()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateySource
                 {
@@ -112,12 +112,12 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void WhenMergin()
         {
-            mergedResult = modelGivenForMerge.MergeDscResources(new List<MergeResult<IDscResource>> {mergeResultGiven});
+            mergedResult = modelGivenForMerge.MergeDscResources(new List<MergeResult<DscResource>> {mergeResultGiven});
         }
 
         private void GivenMergeResultAndModelWithSameNameAndType()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateySource
                 {
@@ -195,7 +195,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
                 ChocoPackageSource = "https://test123",
                 Ensure = Ensure.Present,
                 ResourceStepName = "dockerStep",
-                DependsOn = new List<IDscResource> { testDependency }
+                DependsOn = new List<DscResource> { testDependency }
             };
         }
     }

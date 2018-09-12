@@ -1,6 +1,6 @@
 ﻿namespace DesiredStateManager.Domain.Core.Model
 {
-    public class MergeResult<T> where T : IDscResource
+    public class MergeResult<T> where T : DscResource
     {
         public bool Success { get; set; }
 

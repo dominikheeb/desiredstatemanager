@@ -75,7 +75,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             {
                 ChocolateyPackageName = "docker-for-windows",
                 ResourceStepName = "dockerStep",
-                DependsOn = new List<IDscResource> { chocolateySourceResource },
+                DependsOn = new List<DscResource> { chocolateySourceResource },
                 Ensure = Ensure.Present
             };
 
@@ -83,7 +83,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             {
                 ChocolateyPackageName = "visualstudio",
                 Ensure = Ensure.Present,
-                DependsOn = new List<IDscResource> { dockerChocolateyResource },
+                DependsOn = new List<DscResource> { dockerChocolateyResource },
                 ResourceStepName = "visualStudioStep"
             };
         }
@@ -92,7 +92,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
         {
             testDscConfiguration = new DscConfiguration
             {
-                DscResources = new List<IDscResource>
+                DscResources = new List<DscResource>
                 {
                     dockerChocolateyResource,
                     chocolateySourceResource,

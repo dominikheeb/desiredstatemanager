@@ -8,18 +8,14 @@ using DesiredStateManager.Domain.Core.Model;
 
 namespace DesiredStateManager.Domain.Chocolatey.Model
 {
-    public class ChocolateyPackage : IDscResource
+    public class ChocolateyPackage : DscResource
     {
         public ChocolateyPackage()
         {
             ResourceName = "cChocoPackageInstaller";
         }
 
-        public Ensure Ensure { get; set; }
-        public string ResourceName { get; set; }
-        public string ResourceStepName { get; set; }
-        public List<IDscResource> DependsOn { get; set; }
-        public DscResourceDto ToResourceDto()
+        public override DscResourceDto ToResourceDto()
         {
             return new ChocolateyPackageDto
             {
@@ -32,21 +28,7 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
             };
         }
 
-        public List<MergeResult<IDscResource>> MergeDscResources(List<MergeResult<IDscResource>> mergeResultsToMerge)
-        {
-            mergeResultsToMerge = mergeResultsToMerge.Where(x => !IsOverriddenByThis(x)).ToList();
-            ResourceStepName = MergeHelper.GetMergableName(ResourceStepName, mergeResultsToMerge);
-
-            mergeResultsToMerge.Add(new MergeResult<IDscResource>
-            {
-                Value = this,
-                Success = true
-            });
-
-            return mergeResultsToMerge;
-        }
-
-        private bool IsOverriddenByThis(MergeResult<IDscResource> mergeResult)
+        internal override bool IsOverriddenByThis(MergeResult<DscResource> mergeResult)
         {
             bool chocolateySourceIsOverriddenByThis = false;
             if (mergeResult.Value is ChocolateyPackage chocolateySourceToCompare)
@@ -54,7 +36,7 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
                 chocolateySourceIsOverriddenByThis = chocolateySourceToCompare.ChocolateyPackageName.Equals(ChocolateyPackageName);
             }
 
-            return mergeResult.Value.IsOverriddenByNaming(this) || 
+            return base.IsOverriddenByThis(mergeResult) || 
                    chocolateySourceIsOverriddenByThis;
         }
 

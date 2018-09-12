@@ -4,6 +4,6 @@ namespace DesiredStateManager.Domain.Core.Model
 {
     public class UserPreference
     {
-        public List<IDscResource> DscResources { get; set; }
+        public List<DscResource> DscResources { get; set; }
     }
 }

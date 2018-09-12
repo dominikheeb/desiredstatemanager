@@ -13,9 +13,9 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
         private ChocolateyPackage testChocolateyPackage;
         private ChocolateyPackage testDependency;
         private DscResourceDto resultDto;
-        private MergeResult<IDscResource> mergeResultGiven;
+        private MergeResult<DscResource> mergeResultGiven;
         private ChocolateyPackage modelGivenForMerge;
-        private List<MergeResult<IDscResource>> mergedResult;
+        private List<MergeResult<DscResource>> mergedResult;
 
         [Fact]
         public void TestChocolateyPackageToDto()
@@ -103,7 +103,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void WhenMergin()
         {
-            mergedResult = modelGivenForMerge.MergeDscResources(new List<MergeResult<IDscResource>> {mergeResultGiven});
+            mergedResult = modelGivenForMerge.MergeDscResources(new List<MergeResult<DscResource>> {mergeResultGiven});
         }
 
         private void WhenConvertingToDto()
@@ -113,7 +113,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void GivenMergeResultAndModelWithSamePackage()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateyPackage
                 {
@@ -135,7 +135,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void GivenMergeResultAndModelWithSamePackageButDifferentEnsure()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateyPackage
                 {
@@ -157,7 +157,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
 
         private void GivenMergeResultAndModelWithSameNameAndType()
         {
-            mergeResultGiven = new MergeResult<IDscResource>
+            mergeResultGiven = new MergeResult<DscResource>
             {
                 Value = new ChocolateyPackage
                 {
@@ -194,7 +194,7 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
                 ChocolateyPackageName = "docker-for-windows",
                 Ensure = Ensure.Present,
                 ResourceStepName = "dockerStep",
-                DependsOn = new List<IDscResource> { testDependency },
+                DependsOn = new List<DscResource> { testDependency },
                 ChocolateyPackageVersion = "1.23.4"
             };
         }
