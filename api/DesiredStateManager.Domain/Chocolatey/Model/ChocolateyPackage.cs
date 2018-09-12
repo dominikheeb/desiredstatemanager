@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DesiredStateManager.Domain.Chocolatey.Dto;
 using DesiredStateManager.Domain.Core;
@@ -29,6 +30,32 @@ namespace DesiredStateManager.Domain.Chocolatey.Model
                 ChocolateyPackageVersion = ChocolateyPackageVersion,
                 DependsOn = DependsOn?.Select(x => x.ToResourceDto()).ToList()
             };
+        }
+
+        public List<MergeResult<IDscResource>> MergeDscResources(List<MergeResult<IDscResource>> mergeResultsToMerge)
+        {
+            mergeResultsToMerge = mergeResultsToMerge.Where(x => !IsOverriddenByThis(x)).ToList();
+            ResourceStepName = MergeHelper.GetMergableName(ResourceStepName, mergeResultsToMerge);
+
+            mergeResultsToMerge.Add(new MergeResult<IDscResource>
+            {
+                Value = this,
+                Success = true
+            });
+
+            return mergeResultsToMerge;
+        }
+
+        private bool IsOverriddenByThis(MergeResult<IDscResource> mergeResult)
+        {
+            bool chocolateySourceIsOverriddenByThis = false;
+            if (mergeResult.Value is ChocolateyPackage chocolateySourceToCompare)
+            {
+                chocolateySourceIsOverriddenByThis = chocolateySourceToCompare.ChocolateyPackageName.Equals(ChocolateyPackageName);
+            }
+
+            return mergeResult.Value.IsOverriddenByNaming(this) || 
+                   chocolateySourceIsOverriddenByThis;
         }
 
         public string ChocolateyPackageName { get; set; }

@@ -13,6 +13,9 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
         private ChocolateySource testChocolateySource;
         private ChocolateyPackage testDependency;
         private DscResourceDto resultDto;
+        private MergeResult<IDscResource> mergeResultGiven;
+        private ChocolateySource modelGivenForMerge;
+        private List<MergeResult<IDscResource>> mergedResult;
 
         [Fact]
         public void TestChocolateySourceToDto()
@@ -29,6 +32,107 @@ namespace DesiredStateManager.Domain.Tests.Chocolatey.Model
             GivenModelFilledWithValuesWithoutDependencies();
             WhenConvertingToDto();
             ThenDtoContentIsCorrectWithoutDependencies();
+        }
+
+        [Fact]
+        public void TestChocolateySourceMerge()
+        {
+            GivenMergeResultAndModelWithSameNameAndType();
+            WhenMergin();
+            ThenMergeResultIsOverridden();
+        }
+
+        [Fact]
+        public void TestChocolateySourceMergeOnPresentAbsent()
+        {
+            GivenMergeResultAndModelWithSameSourceButDifferentEnsure();
+            WhenMergin();
+            ThenMergeResultIsOverridden();
+        }
+
+        [Fact]
+        public void TestChocolateySourceMergeWithSameSource()
+        {
+            GivenMergeResultAndModelWithSameSource();
+            WhenMergin();
+            ThenMergeResultIsOverridden();
+        }
+
+        private void GivenMergeResultAndModelWithSameSource()
+        {
+            mergeResultGiven = new MergeResult<IDscResource>
+            {
+                Value = new ChocolateySource
+                {
+                    ResourceStepName = "TestStep",
+                    ChocoPackageSource = "Test.ch",
+                    Ensure = Ensure.Present
+                }
+            };
+
+            modelGivenForMerge = new ChocolateySource
+            {
+                ResourceStepName = "Step1",
+                ChocoPackageSource = "Test.ch",
+                Ensure = Ensure.Present
+            };
+        }
+
+        private void GivenMergeResultAndModelWithSameSourceButDifferentEnsure()
+        {
+            mergeResultGiven = new MergeResult<IDscResource>
+            {
+                Value = new ChocolateySource
+                {
+                    ResourceStepName = "TestStep",
+                    ChocoPackageSource = "Test.ch",
+                    Ensure = Ensure.Present
+                }
+            };
+
+            modelGivenForMerge = new ChocolateySource
+            {
+                ResourceStepName = "Step2",
+                ChocoPackageSource = "Test.ch",
+                Ensure = Ensure.Absent
+            };
+        }
+
+        private void ThenMergeResultIsOverridden()
+        {
+            var mergeResult = Assert.Single(mergedResult);
+            Assert.NotNull(mergeResult);
+            Assert.True(mergeResult.Success);
+            var chocolateySource = Assert.IsType<ChocolateySource>(mergeResult.Value);
+            Assert.Equal(modelGivenForMerge.ResourceStepName, chocolateySource.ResourceStepName);
+            Assert.Equal(modelGivenForMerge.ChocoPackageSource, chocolateySource.ChocoPackageSource);
+            Assert.Equal(modelGivenForMerge.ResourceName, chocolateySource.ResourceName);
+            Assert.Equal(modelGivenForMerge.Ensure, chocolateySource.Ensure);
+        }
+
+        private void WhenMergin()
+        {
+            mergedResult = modelGivenForMerge.MergeDscResources(new List<MergeResult<IDscResource>> {mergeResultGiven});
+        }
+
+        private void GivenMergeResultAndModelWithSameNameAndType()
+        {
+            mergeResultGiven = new MergeResult<IDscResource>
+            {
+                Value = new ChocolateySource
+                {
+                    ResourceStepName = "TestStep",
+                    ChocoPackageSource = "Test.ch",
+                    Ensure = Ensure.Present
+                }
+            };
+
+            modelGivenForMerge = new ChocolateySource
+            {
+                ResourceStepName = "TestStep",
+                ChocoPackageSource = "Test.de",
+                Ensure = Ensure.Present
+            };
         }
 
         private void ThenDtoContentIsCorrectWithoutDependencies()

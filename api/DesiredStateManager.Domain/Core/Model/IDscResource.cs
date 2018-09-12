@@ -14,5 +14,7 @@ namespace DesiredStateManager.Domain.Core.Model
         List<IDscResource> DependsOn { get; set; }
 
         DscResourceDto ToResourceDto();
+
+        List<MergeResult<IDscResource>> MergeDscResources(List<MergeResult<IDscResource>> mergeResultsToMerge);
     }
 }
