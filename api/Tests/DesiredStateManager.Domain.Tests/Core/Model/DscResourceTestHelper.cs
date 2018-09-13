@@ -5,7 +5,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
 {
     public static class DscResourceTestHelper
     {
-        public static void AssertIDscResourceEqual(DscResource expectedDscResource, DscResource actualDscResource)
+        public static void AssertDscResourceEqual(DscResource expectedDscResource, DscResource actualDscResource)
         {
             Assert.Equal(expectedDscResource.ResourceStepName, actualDscResource.ResourceStepName);
             Assert.Equal(expectedDscResource.ResourceName, actualDscResource.ResourceName);

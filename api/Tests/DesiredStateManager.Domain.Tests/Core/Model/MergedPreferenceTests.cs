@@ -1,27 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DesiredStateManager.Domain.Chocolatey.Model;
 using DesiredStateManager.Domain.Core;
+using DesiredStateManager.Domain.Core.Dto;
 using DesiredStateManager.Domain.Core.Model;
 using Xunit;
 
 namespace DesiredStateManager.Domain.Tests.Core.Model
 {
-    public class MergedPreferenceTests
+    public partial class MergedPreferenceTests
     {
-        private ChocolateySource chocolateySourceResource;
-        private ChocolateyPackage dockerChocolateyResource;
-        private ChocolateyPackage visualStudioChocolateyResource;
-        private ChocolateyPackage absentDockerChocolateyResource;
-        private ChocolateyPackage firefoxChocolateyResource;
-        private ChocolateyPackage firefoxSpecifiedVersionResource;
+        private MockDscResource chocolateySourceResource;
+        private MockDscResource dockerChocolateyResource;
+        private MockDscResource2 visualStudioChocolateyResource;
+        private MockDscResource absentDockerChocolateyResource;
+        private MockDscResource firefoxChocolateyResource;
         private ProjectPreference projectPreference;
         private UserPreference userPreference;
         private MergedPreference resultPreference;
-        private ChocolateyPackage dockerChocolateyResourceVersion1;
-        private ChocolateyPackage dockerChocolateyResourceVersion2;
+        private MergedPreference mergeResult;
 
-        [Fact(Skip = "Not implemented")]
+        [Fact]
+        public void TestMergeEmptyPrefernenceMergeResult()
+        {
+            GivenUserPreference();
+            WhenMergeUserPreferenceWithEmptyPreference();
+            ThenUserPreferenceIsApplied();
+        }
+
+        [Fact]
         public void TestPreferenceMerge()
         {
             InitializeTestDscResources();
@@ -30,16 +36,7 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             ThenCorrectResourcesAreCreated();
         }
 
-        [Fact(Skip = "Not implemented")]
-        public void TestVersionMerge()
-        {
-            //TODO: Move to chocolatey tests, since it's testing mergin strategy of chocopackages
-            GivenUserAndProjectPreferencesWithVersionMissmatch();
-            WhenMergePreferences();
-            ThenVersionOfProjectWins();
-        }
-
-        [Fact(Skip = "Not implemented")]
+        [Fact]
         public void TestMergeStepNaming()
         {
             GivenUserAndProjectPreferencesWithSameStepNameButDifferentPackage();
@@ -47,23 +44,45 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             ThenNamesDontMatchAnymore();
         }
 
+        private void GivenUserPreference()
+        {
+            userPreference = new UserPreference
+            {
+                DscResources =
+                {
+                    new MockDscResource {Ensure = Ensure.Present, ResourceStepName = "Step", ResourceName = "Test"}
+                }
+            };
+        }
+
+        private void ThenUserPreferenceIsApplied()
+        {
+            Assert.True(mergeResult.Success);
+            Assert.Equal(userPreference.DscResources.Count, mergeResult.MergedDscResources.Count);
+            foreach (var userPreferenceDscResource in userPreference.DscResources)
+            {
+                var mergedDscResource = mergeResult.MergedDscResources.Single(
+                    x => x.Value.ResourceName.Equals(userPreferenceDscResource.ResourceName));
+                Assert.True(mergedDscResource.Success);
+                DscResourceTestHelper.AssertDscResourceEqual(userPreferenceDscResource, mergedDscResource.Value);
+            }
+        }
+
         private void ThenNamesDontMatchAnymore()
         {
-            Assert.NotEqual(1, resultPreference.DscResources.GroupBy(x => x.ResourceStepName).Count());
+            Assert.NotEqual(1, resultPreference.MergedDscResources.GroupBy(x => x.Value.ResourceStepName).Count());
         }
 
         private void GivenUserAndProjectPreferencesWithSameStepNameButDifferentPackage()
         {
-            dockerChocolateyResource = new ChocolateyPackage
+            dockerChocolateyResource = new MockDscResource
             {
-                ChocolateyPackageName = "docker-for-windows",
                 ResourceStepName = "step1",
-                Ensure = Ensure.Present
+                Ensure = Ensure.Absent
             };
 
-            visualStudioChocolateyResource = new ChocolateyPackage
+            visualStudioChocolateyResource = new MockDscResource2
             {
-                ChocolateyPackageName = "visualstudio",
                 Ensure = Ensure.Present,
                 ResourceStepName = "step1"
             };
@@ -79,82 +98,42 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
             };
         }
 
-        private void ThenVersionOfProjectWins()
-        {
-            Assert.NotNull(resultPreference);
-            Assert.NotNull(resultPreference.DscResources);
-            var dockerPackage = Assert.IsType<ChocolateyPackage>(Assert.Single(resultPreference.DscResources));
-            DscResourceTestHelper.AssertIDscResourceEqual(dockerChocolateyResourceVersion1, dockerPackage);
-            Assert.Equal(dockerChocolateyResourceVersion1.ChocolateyPackageName, dockerPackage.ChocolateyPackageName);
-            Assert.Equal(dockerChocolateyResourceVersion1.ChocolateyPackageVersion, dockerPackage.ChocolateyPackageVersion);
-        }
-
-        private void GivenUserAndProjectPreferencesWithVersionMissmatch()
-        {
-            dockerChocolateyResourceVersion1 = new ChocolateyPackage
-            {
-                ChocolateyPackageName = "docker-for-windows",
-                ResourceStepName = "dockerStep",
-                Ensure = Ensure.Present,
-                ChocolateyPackageVersion = "1.2.0"
-            };
-
-            dockerChocolateyResourceVersion2 = new ChocolateyPackage
-            {
-                ChocolateyPackageName = "docker-for-windows",
-                ResourceStepName = "dockerStep",
-                Ensure = Ensure.Present,
-                ChocolateyPackageVersion = "2.2.0"
-            };
-
-            projectPreference = new ProjectPreference
-            {
-                DscResources = new List<DscResource> { dockerChocolateyResourceVersion1 }
-            };
-
-            userPreference = new UserPreference
-            {
-                DscResources = new List<DscResource> {dockerChocolateyResourceVersion2}
-            };
-        }
-
         private void ThenCorrectResourcesAreCreated()
         {
             Assert.NotNull(resultPreference);
-            Assert.Equal(4, resultPreference.DscResources.Count);
+            Assert.Equal(4, resultPreference.MergedDscResources.Count);
 
-            var resultChocoSourceResource = Assert.IsType<ChocolateySource>(Assert.Single(resultPreference.DscResources, x => x.ResourceStepName.Equals("chocoSource")));
-            DscResourceTestHelper.AssertIDscResourceEqual(chocolateySourceResource, resultChocoSourceResource);
-            Assert.Equal(chocolateySourceResource.ChocoPackageSource, resultChocoSourceResource.ChocoPackageSource);
+            var resultChocoSourceResource = Assert.IsType<MergeResult<DscResource>>(Assert.Single(resultPreference.MergedDscResources, x => x.Value.ResourceStepName.Equals("chocoSource")));
+            DscResourceTestHelper.AssertDscResourceEqual(chocolateySourceResource, resultChocoSourceResource.Value);
 
-            var resultDockerAbsentResource = Assert.IsType<ChocolateyPackage>(Assert.Single(resultPreference.DscResources, x => x.ResourceStepName.Equals("dockerStep")));
-            DscResourceTestHelper.AssertIDscResourceEqual(absentDockerChocolateyResource, resultDockerAbsentResource);
-            Assert.Equal(absentDockerChocolateyResource.ChocolateyPackageName, resultDockerAbsentResource.ChocolateyPackageName);
-            Assert.Equal(absentDockerChocolateyResource.ChocolateyPackageVersion, resultDockerAbsentResource.ChocolateyPackageVersion);
+            var resultDockerAbsentResource = Assert.IsType<MergeResult<DscResource>>(Assert.Single(resultPreference.MergedDscResources, x => x.Value.ResourceStepName.Equals("dockerStep")));
+            DscResourceTestHelper.AssertDscResourceEqual(absentDockerChocolateyResource, resultDockerAbsentResource.Value);
 
-            var resultVisualStudioResource = Assert.IsType<ChocolateyPackage>(Assert.Single(resultPreference.DscResources,
-                x => x.ResourceStepName.Equals("visualStudioStep")));
-            DscResourceTestHelper.AssertIDscResourceEqual(visualStudioChocolateyResource, resultVisualStudioResource);
-            Assert.Equal(visualStudioChocolateyResource.ChocolateyPackageName, resultVisualStudioResource.ChocolateyPackageName);
-            Assert.Equal(visualStudioChocolateyResource.ChocolateyPackageVersion, resultVisualStudioResource.ChocolateyPackageVersion);
+            var resultVisualStudioResource = Assert.IsType<MergeResult<DscResource>>(Assert.Single(resultPreference.MergedDscResources,
+                x => x.Value.ResourceStepName.Equals("visualStudioStep")));
+            DscResourceTestHelper.AssertDscResourceEqual(visualStudioChocolateyResource, resultVisualStudioResource.Value);
 
-            var resultFirefoxSpecifiedResource = Assert.IsType<ChocolateyPackage>(Assert.Single(resultPreference.DscResources,
-                x => x.ResourceStepName.Equals("firefoxStepVersioned")));
-            DscResourceTestHelper.AssertIDscResourceEqual(firefoxSpecifiedVersionResource, resultFirefoxSpecifiedResource);
-            Assert.Equal(firefoxSpecifiedVersionResource.ChocolateyPackageName, resultFirefoxSpecifiedResource.ChocolateyPackageName);
-            Assert.Equal(firefoxSpecifiedVersionResource.ChocolateyPackageVersion, resultFirefoxSpecifiedResource.ChocolateyPackageVersion);
+            var resultFirefoxSpecifiedResource = Assert.IsType<MergeResult<DscResource>>(Assert.Single(resultPreference.MergedDscResources,
+                x => x.Value.ResourceStepName.Equals("firefoxStep")));
+            DscResourceTestHelper.AssertDscResourceEqual(firefoxChocolateyResource, resultFirefoxSpecifiedResource.Value);
+        }
+
+        private void WhenMergeUserPreferenceWithEmptyPreference()
+        {
+            mergeResult = userPreference.MergePreference(new EmptyPreferenceMergeResult());
         }
 
         private void WhenMergePreferences()
         {
-            resultPreference = MergedPreference.FromPreferences(projectPreference, userPreference);
+            resultPreference =
+                projectPreference.MergePreference(userPreference.MergePreference(new EmptyPreferenceMergeResult()));
         }
 
         private void GivenUserAndProjectPreferences()
         {
             projectPreference = new ProjectPreference
             {
-                DscResources = new List<DscResource> { chocolateySourceResource, visualStudioChocolateyResource, absentDockerChocolateyResource, firefoxSpecifiedVersionResource }
+                DscResources = new List<DscResource> { chocolateySourceResource, visualStudioChocolateyResource, absentDockerChocolateyResource }
             };
 
             userPreference = new UserPreference
@@ -165,49 +144,48 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
 
         private void InitializeTestDscResources()
         {
-            chocolateySourceResource = new ChocolateySource
+            chocolateySourceResource = new MockDscResource
             {
                 Ensure = Ensure.Present,
-                ResourceStepName = "chocoSource",
-                ChocoPackageSource = "https://chocolateySource"
+                ResourceStepName = "chocoSource"
             };
 
-            dockerChocolateyResource = new ChocolateyPackage
+            dockerChocolateyResource = new MockDscResource
             {
-                ChocolateyPackageName = "docker-for-windows",
                 ResourceStepName = "dockerStep",
                 DependsOn = new List<DscResource> { chocolateySourceResource },
                 Ensure = Ensure.Present
             };
 
-            visualStudioChocolateyResource = new ChocolateyPackage
+            visualStudioChocolateyResource = new MockDscResource2
             {
-                ChocolateyPackageName = "visualstudio",
                 Ensure = Ensure.Present,
                 ResourceStepName = "visualStudioStep"
             };
 
-            absentDockerChocolateyResource = new ChocolateyPackage
+            absentDockerChocolateyResource = new MockDscResource
             {
-                ChocolateyPackageName = "docker-for-windows",
                 ResourceStepName = "dockerStep",
                 Ensure = Ensure.Absent
             };
 
-            firefoxChocolateyResource = new ChocolateyPackage
+            firefoxChocolateyResource = new MockDscResource
             {
-                ChocolateyPackageName = "firefox",
                 Ensure = Ensure.Present,
                 ResourceStepName = "firefoxStep"
             };
+        }
 
-            firefoxSpecifiedVersionResource = new ChocolateyPackage
+        private class MockDscResource2 : DscResource
+        {
+            public MockDscResource2()
             {
-                ChocolateyPackageName = "firefox",
-                Ensure = Ensure.Present,
-                ResourceStepName = "firefoxStepVersioned",
-                ChocolateyPackageVersion = "1.23"
-            };
+                ResourceName = "Mock2";
+            }
+            public override DscResourceDto ToResourceDto()
+            {
+                return new Dto.MergedPreferenceTests.MockDto();
+            }
         }
     }
 }

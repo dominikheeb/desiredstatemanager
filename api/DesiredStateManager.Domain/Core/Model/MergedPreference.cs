@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DesiredStateManager.Domain.Core.Model
 {
     public class MergedPreference
     {
-        public List<DscResource> DscResources { get; set; }
+        public List<MergeResult<DscResource>> MergedDscResources { get; set; }
+        public bool Success { get; set; }
 
-        public static MergedPreference FromPreferences(ProjectPreference projectPreference,
-            UserPreference userPreference)
+        public MergedPreference(List<MergeResult<DscResource>> mergedDscResources)
         {
-            throw new NotImplementedException();
+            MergedDscResources = mergedDscResources;
+            Success = mergedDscResources.All(x => x.Success);
         }
     }
 }

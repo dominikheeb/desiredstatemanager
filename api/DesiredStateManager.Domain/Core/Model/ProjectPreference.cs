@@ -2,8 +2,7 @@
 
 namespace DesiredStateManager.Domain.Core.Model
 {
-    public class ProjectPreference
+    public class ProjectPreference : Preference   
     {
-        public List<DscResource> DscResources { get; set; }
     }
 }
