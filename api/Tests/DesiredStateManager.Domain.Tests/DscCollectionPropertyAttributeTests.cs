@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DesiredStateManager.Domain.Processing;
+using DesiredStateManager.Domain.Tests.Processing;
 using Xunit;
 
 namespace DesiredStateManager.Domain.Tests
@@ -16,7 +17,7 @@ namespace DesiredStateManager.Domain.Tests
         [Fact]
         public void TestCollectionPropertyOnlyUsedInCollections()
         {
-            var allTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes());
+            var allTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(x => x != typeof(DscResourceProcessingHelperTests.AttributeIssueTestClass));
             var allPropertyInfos = allTypes.SelectMany(a => a.GetProperties()).ToArray();
 
             foreach (var propertyInfo in allPropertyInfos)

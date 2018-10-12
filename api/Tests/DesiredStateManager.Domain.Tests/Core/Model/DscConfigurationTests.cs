@@ -16,7 +16,57 @@ namespace DesiredStateManager.Domain.Tests.Core.Model
         private ChocolateySource chocolateySourceResource;
         private DscConfiguration testDscConfiguration;
         private DscConfigurationDto resultDto;
-        
+        private MergedPreference mergedPreference;
+
+        [Fact]
+        public void TestDscConfigurationMergeResult()
+        {
+            GivenMergedPreferenceWithSuccess();
+            WhenDscConfigurationIsCreatedFromMergeResult();
+            ThenDscResourcesAreCreatedCorrectly();
+        }
+
+        private void ThenDscResourcesAreCreatedCorrectly()
+        {
+            Assert.Equal(mergedPreference.MergedDscResources.Count, testDscConfiguration.DscResources.Count);
+            foreach (var dscResource in testDscConfiguration.DscResources)
+            {
+                var mergeResult = mergedPreference.MergedDscResources.Single(x =>
+                    x.Value.ResourceStepName.Equals(dscResource.ResourceStepName));
+                DscResourceTestHelper.AssertDscResourceEqual(mergeResult.Value, dscResource);
+            }
+        }
+
+        private void WhenDscConfigurationIsCreatedFromMergeResult()
+        {
+            testDscConfiguration = DscConfiguration.FromMergedPreference(mergedPreference);
+        }
+
+        private void GivenMergedPreferenceWithSuccess()
+        {
+            mergedPreference = new MergedPreference(new List<MergeResult<DscResource>>
+            {
+                new MergeResult<DscResource>
+                {
+                    Value = new MockDscResource
+                    {
+                        Ensure = Ensure.Present,
+                        ResourceStepName = "Step1"
+                    },
+                    Success = true
+                },
+                new MergeResult<DscResource>
+                {
+                    Value = new MockDscResource
+                    {
+                        Ensure = Ensure.Absent,
+                        ResourceStepName = "Step2"
+                    },
+                    Success = true
+                }
+            });
+        }
+
         [Fact]
         public void TestDscConfigurationToDto()
         {
